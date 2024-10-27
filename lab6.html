@@ -1,0 +1,56 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Document</title>
+    <link rel="stylesheet" href="https://unpkg.com/leaflet@1.9.4/dist/leaflet.css"
+        integrity="sha256-p4NxAoJBhIIN+hmNHrzRCf9tD/miZyoHS5obTRR9BMY=" crossorigin="" />
+
+    <style>
+        #map {
+            height: 500px;
+        }
+    </style>
+</head>
+
+<body>
+    <div id="map"></div>
+    <h2 id="marker1"></h2>
+    <h3 id="loc1"></h3>
+    <h2 id="marker2"></h2>
+    <h3 id="loc2"></h3>
+    <h2 id="marker3"></h2>
+    <h3 id="loc3"></h3>
+    <script src="https://unpkg.com/leaflet@1.9.4/dist/leaflet.js"
+        integrity="sha256-20nQCchB9co0qIjJZRGuk2/Z9VM+kNiyxNV1lvTlZBo=" crossorigin=""></script>
+    <script>
+        var map = L.map('map').setView([36.505, -80.09], 3);
+        L.tileLayer('https://tile.openstreetmap.org/{z}/{x}/{y}.png', {
+            maxZoom: 19,
+            attribution: '&copy; <a href="http://www.openstreetmap.org/copyright">OpenStreetMap</a>'
+        }).addTo(map);
+        function getRandomInRange(from, to, fixed) {
+            return (Math.random() * (to - from) + from).toFixed(fixed) * 1;
+        }
+
+        for (let i = 1; i <= 3; i++) {
+            const Latitude = getRandomInRange(30, 35, 3);
+            const Longitude = getRandomInRange(-90, -100, 3);
+
+            fetch(`https://api.bigdatacloud.net/data/reverse-geocode-client?latitude=${Latitude}&longitude=${Longitude}&localityLanguage=en`)
+                .then(res => res.json())
+                .then(data => {
+                    document.getElementById(`marker${i}`).innerHTML = `Marker ${i}: Latitude: ${data.latitude}, Longitude: ${data.longitude}`;
+                    document.getElementById(`loc${i}`).innerHTML = `Locality: ${data.locality}`
+
+
+                    L.marker([Latitude, Longitude]).addTo(map);
+                })
+        }
+
+    </script>
+</body>
+
+</html>
